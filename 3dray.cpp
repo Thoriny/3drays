@@ -14,9 +14,10 @@
 int main(int argc, char **argv)
 {
 	float x, y, z;
-	int i, j, k,np1;
+	int i, j, k,ang,iazimuth,np1;
 	int ix, iy, iz;
 	float *p1x, *p1y, *p1z,*yout;
+	float theta,azimuth;
 	float ***v,***line;
 
 	int nvx = 100;
@@ -54,19 +55,25 @@ int main(int argc, char **argv)
 	x = 50*dvx;
 	y = 50*dvy;
 	z = 50*dvz;
-
-	rayTracing3d(x, y, z, v, 0, 0, nvx, nvy, nvz, dvx, dvy, dvz, p1x, p1y, p1z, &np1, yout);
-
-	
-	printf("np1=%d\n",np1);
-
-	for (i = 0;i < np1;i++)
+   for(iazimuth=0;iazimuth<22;iazimuth++)
+	for (ang = 0; ang< 90;ang++)
 	{
-		ix = (int)(p1x[i] / dvx);
-		iy = (int)(p1y[i]/ dvy);
-		iz = (int)(p1z [i]/ dvz);
-		printf("%d %d %d \n", ix, iy, iz);
-		line[ix][iy][iz] = 999;
+		theta = ang * 4 * PI / 180;
+		azimuth = iazimuth * 4 * PI / 180;
+		rayTracing3d(x, y, z, v, theta, azimuth, nvx, nvy, nvz, dvx, dvy, dvz, p1x, p1y, p1z, &np1, yout);
+
+         
+		printf("np1=%d\n", np1);
+
+		for (i = 0;i < np1;i++)
+		{
+			ix = (int)(p1x[i] / dvx);
+			iy = (int)(p1y[i] / dvy);
+			iz = (int)(p1z[i] / dvz);
+			
+			line[ix][iy][iz] =20 ;
+			printf("ix=%d iy=%d iz=%d line=%f\n", ix, iy, iz, line[ix][iy][iz]);
+		}
 	}
 	output3float(line, "line.dat", nvz, nvy, nvx);
 
